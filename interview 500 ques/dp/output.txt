@@ -1,0 +1,39 @@
+i = 0
+i+st = 1
+i = 1
+i+st = 2
+i = 2
+i+st = 3
+i = 3
+i+st = 4
+i = 4
+i+st = 5
+i = 0
+i+gap+st = 2
+i = 1
+i+gap+st = 3
+i = 2
+i+gap+st = 4
+i = 3
+i+gap+st = 5
+i = 0
+i+gap+st = 3
+i = 1
+i+gap+st = 4
+i = 2
+i+gap+st = 5
+i = 0
+i+gap+st = 4
+i = 1
+i+gap+st = 5
+i = 0
+i+gap+st = 5
+0 -18 -30 -36 46 102 
+0 0 -18 -24 21 52 
+0 0 0 -12 30 37 
+0 0 0 0 42 46 
+0 0 0 0 0 42 
+0 0 0 0 0 0 
+102
+
+Executed In: 0 ms
