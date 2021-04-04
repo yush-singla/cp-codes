@@ -11,7 +11,7 @@ using namespace std;
 #define mod                     1000000007
 #define inf                     1e18
 #define endl			        "\n"
-#define tc                      int ntc;cin>>ntc;int ttc=ntc;while(ntc--)
+#define tc                      int ntc;cin>>ntc;while(ntc--)
 #define pb 				        push_back
 #define vi                      vector<int>
 #define vs				        vector<string>
@@ -39,7 +39,7 @@ vs tokenizer(string str, char ch)         {std::istringstream var((str)); vs v; 
 void err(istream_iterator<string> it) {}
 template<typename T, typename... Args>
 void err(istream_iterator<string> it, T a, Args... args) {
-	cout << *it << " = " << a << endl;;
+	cout << *it << " = " << a << endl;
 	err(++it, args...);
 }
 //typedef tree<int, null_type, less<int>, rb_tree_tag, tree_order_statistics_node_update> pbds;
@@ -56,89 +56,34 @@ void file_i_o()
 #endif
 }
 
-int mini(int x, int y) {
-	if (y < 4)return 0;
-	return min(x - 1, y / 2 - 1);
-}
-
 int32_t main() {
 	clock_t begin = clock();
 	file_i_o();
 	// Write your code here....
 	tc{
-		int r, c;
-		cin >> r >> c;
-		int arr[r][c];
-		loop(i, 0, r - 1) {
-			loop(j, 0, c - 1) {
-				cin >> arr[i][j];
+		string s;
+		cin >> s;
+		int n = s.size();
+		bool d = 0;
+		for (int i = 0, j = n - 1; i <= j; i++, j--) {
+			if (i == j && s[i] == 'a') {
+				break;
+			}
+			if (s[i] == s[j] && s[i] != 'a') {
+				string ss = "a";
+				s.insert(i, ss);
+				d = 1;
+				break;
+			} else if (s[i] != s[j]) {
+				string ss = "a";
+				s.insert(n / 2, ss);
+				d = 1;
+				break;
 			}
 		}
-		int up[r][c] = {0}, down[r][c] = {0}, left[r][c] = {0}, right[r][c] = {0};
-		loop(i, 0, r - 1) {
-			loop(j, 0, c - 1) {
-				up[i][j] = 0, down[i][j] = 0, right[i][j] = 0, left[i][j] = 0;
-			}
-		}
-		loop(i, 0, r - 1) {
-			left[i][0] = arr[i][0];
-			loop(j, 1, c - 1) {
-				if (arr[i][j] == 1) {
-					left[i][j] = left[i][j - 1] + 1;
-				}
-			}
-			right[i][c - 1] = arr[i][c - 1];
-			looprev(j, c - 2, 0) {
-				if (arr[i][j] == 1) {
-					right[i][j] = right[i][j + 1] + 1;
-				}
-			}
-		}
+		if (d)cout << "YES" << endl << s << endl;
+		else cout << "NO" << endl;
 
-		loop(j, 0, c - 1) {
-			up[0][j] = arr[0][j];
-			loop(i, 1, r - 1) {
-				if (arr[i][j] == 1) {
-					up[i][j] = up[i - 1][j] + 1;
-				}
-			}
-			down[r - 1][j] = arr[r - 1][j];
-			looprev(i, r - 2, 0) {
-				if (arr[i][j] == 1) {
-					down[i][j] = down[i + 1][j] + 1;
-				}
-			}
-		}
-		/*loop(i, 0, r - 1) {
-			loop(j, 0, c - 1) {
-				log(i, j, down[i][j])
-			}
-		}*/
-		// loop(i,0,r-1)
-		int anss = 0;
-		loop(i, 0, r - 1) {
-			loop(j, 0, c - 1) {
-				if (arr[i][j] == 1) {
-					int ans = 0;
-					ans += mini(up[i][j], left[i][j]);
-					ans += mini(down[i][j], left[i][j]);
-					ans += mini(up[i][j], right[i][j]);
-					// log(right[i][j], down[i][j]);
-					ans += mini(down[i][j], right[i][j]);
-					ans += mini(left[i][j], up[i][j]);
-					ans += mini(left[i][j], down[i][j]);
-					ans += mini(right[i][j], up[i][j]);
-					ans += mini(right[i][j], down[i][j]);
-					anss += ans;
-					if (i == 0 && j == 0) {
-						// log(up[i][j], down[i][j], right[i][j], left[i][j])
-						// log(ans, i, j)cout << endl;
-					}
-				}
-			}
-		}
-		// log(anss)
-		cout << "Case #" << ttc - ntc << ": " << anss << endl;
 	}
 
 #ifndef ONLINE_JUDGE
