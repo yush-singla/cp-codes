@@ -6,11 +6,11 @@
 //#include <ext/pb_ds/trie_policy.hpp>
 //using namespace __gnu_pbds;
 using namespace std;
-// #define int 		            long long
+#define int 		            long long
 #define ld				        long double
 #define mod                     1000000007
 #define inf                     1e18
-// #define endl			        "\n"
+#define endl			        "\n"
 #define tc                      int ntc;cin>>ntc;while(ntc--)
 #define pb 				        push_back
 #define vi                      vector<int>
@@ -30,11 +30,13 @@ using namespace std;
 #define looprev(i,a,b) 	        for(int i=(a);i>=(b);i--)
 #define iter(container, it)     for(__typeof(container.begin()) it = container.begin(); it != container.end(); it++)
 #define log(args...) 	        { string _s = #args; replace(_s.begin(), _s.end(), ',', ' '); stringstream _ss(_s); istream_iterator<string> _it(_ss); err(_it, args); }
-#define logarr(arr,a,b)	        for(int z=(a);z<=(b);z++) {cout<<arr[z].ff<<' '<<arr[z].ss<<" ";}cout<<endl;
+#define logarr(arr,a,b)	        for(int z=(a);z<=(b);z++) cout<<(arr[z])<<" ";cout<<endl;
 template <typename T> T gcd(T a, T b) {if (a % b) return gcd(b, a % b); return b;}
 template <typename T> T lcm(T a, T b)        {return (a * (b / gcd(a, b)));}
 vs tokenizer(string str, char ch)         {std::istringstream var((str)); vs v; string t; while (getline((var), t, (ch))) {v.pb(t);} return v;}
 
+int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
+int dy[] = { 0, 0, 1, -1, 1, -1, -1, 1 };
 
 void err(istream_iterator<string> it) {}
 template<typename T, typename... Args>
@@ -60,74 +62,82 @@ int32_t main() {
 	clock_t begin = clock();
 	file_i_o();
 	// Write your code here....
-	int n;
-	cin >> n;
-	int arr[n][n];
-	std::vector<pii> v[2];
-	loop(i, 0, n - 1) {
-		loop(j, 0, n - 1) {
-			v[(i + j) % 2].pb({i + 1, j + 1});
-		}
+	string s, t;
+	cin >> s >> t;
+	int n = s.size(), m = t.size();
+	pair<int, pii> dp[n + 1][m + 1];
+	loop(i, 0, n) {
+		dp[i][0] = mp(0, mp((int) - 1, (int) - 1));
 	}
-	// logarr(v[0], 0, n - 1);
-	// logarr(v[1], 0, n - 1);
-	int a;
-	cin >> a;
-	int fill0 = (a + 1) % 3, i0 = 0;
-	if (fill0 == 0)fill0 = 3;
-	int fill1 = (a + 2) % 3, i1 = 0;
-	if (fill1 == 0)fill1 = 3;
-	// log(fill1, fill0)
-	cout << fill0 << ' ' << v[0][i0].ff << ' ' << v[0][i0++].ss << endl;
-	// fflush(stdout);
-	int emp;
-	loop(i, 0, n * n ) {
-		if (i0 == v[0].size()) {
-			emp = 0;
-			break;
-		}
-		if (i1 == v[1].size()) {
-			emp = 1;
-			break;
-		}
-		cin >> a;
-		if (a == fill0) {
-			cout << fill1 << ' ' << v[1][i1].ff << ' ' << v[1][i1++].ss << endl;
-			// fflush(stdout);
-		} else {
-			cout << fill0 << ' ' << v[0][i0].ff << ' ' << v[0][i0++].ss << endl;
-			// fflush(stdout);
-		}
+	loop(i, 0, m) {
+		dp[0][i] = mp(0, mp((int) - 1, (int) - 1));
 	}
-	if (emp == 1) {
-		while (i0 != v[0].size()) {
-			cin >> a;
-			if (a != fill0) {
-				cout << fill0 << ' ' << v[0][i0].ff << ' ' << v[0][i0++].ss << endl;
-				// fflush(stdout);
-			} else {
-				if (a == fill0) {
-					int fill2 = 6 - fill1 - fill0;
-					cout << fill2 << ' ' << v[0][i0].ff << ' ' << v[0][i0++].ss << endl;
-					// fflush(stdout);
+	loop(i, 1, n) {
+		loop(j, 1, m) {
+			if (s[i - 1] == t[j - 1]) {
+				auto el = dp[i - 1][j - 1];
+				if (el.ff == 0 && el.ss == mp((int) - 1, (int) - 1)) {
+					dp[i][j] = mp(el.ff + 1, el.ss);
+				} else if (el.ff == 1 && el.ss == mp((int) - 1, (int) - 1)) {
+					dp[i][j] = mp(el.ff + 1, mp(i - 1, j - 1));
+				} else if (el.ff == dp[el.ss.ff][el.ss.ss].ff) {
+					dp[i][j] = mp(dp[i - 1][j - 1].ff + 1, dp[i - 1][j - 1].ss);
+
+				} else {
+					dp[i][j] = mp(dp[i - 1][j - 1].ff + 1, mp(i - 1, j - 1));
 				}
-			}
-		}
-	} else if (emp == 0) {
-		while (i1 != v[1].size()) {
-			cin >> a;
-			if (a != fill1) {
-				cout << fill1 << ' ' << v[1][i1].ff << ' ' << v[1][i1++].ss << endl;
-				// fflush(stdout);
+
 			} else {
-				if (a == fill1) {
-					int fill2 = 6 - fill1 - fill0;
-					cout << fill2 << ' ' << v[1][i1].ff << ' ' << v[1][i1++].ss << endl;
-					// fflush(stdout);
+				if (dp[i - 1][j] >= dp[i][j - 1]) {
+					auto el = dp[i - 1][j];
+					if (el.ff == 0 && el.ss ==  mp((int) - 1, (int) - 1)) {
+						dp[i][j] = el;
+					}
+					else if (el.ff == 1 && el.ss ==  mp((int) - 1, (int) - 1)) {
+						dp[i][j] = mp(el.ff, mp(i - 1, j));
+					}
+					else if (el.ff == dp[el.ss.ff][el.ss.ss].ff) {
+						dp[i][j] = el;
+					} else {
+						dp[i][j] = mp(el.ff, mp(i - 1, j));
+					}
+				} else {
+					auto el = dp[i][j - 1];
+					if (el.ff == 0 && el.ss == mp((int) - 1, (int) - 1)) {
+						dp[i][j] = el;
+					}
+					else if (el.ff == 1 && el.ss == mp((int) - 1, (int) - 1)) {
+						dp[i][j] = mp(el.ff, mp(i, j - 1));
+					}
+					else if (el.ff == dp[el.ss.ff][el.ss.ss].ff) {
+						dp[i][j] = el;
+					} else {
+						dp[i][j] = mp(el.ff, mp(i, j - 1));
+					}
 				}
 			}
 		}
 	}
+	pii gotoo;
+	if (s[n - 1] == t[m - 1]) {
+		gotoo = {n, m};
+	} else {
+		gotoo = dp[n][m].ss;
+	}
+	// loop(i, 0, n) {
+	// 	loop(j, 0, m) {
+	// 		auto el = dp[i][j];
+	// 		cout << el.ff << "&" << el.ss.ff << ',' << el.ss.ss << ' ';
+	// 	} cout << endl;
+	// }
+	string ans;
+	while (gotoo != mp((int) - 1, (int) - 1)) {
+		ans.pb(s[gotoo.ff - 1]);
+		gotoo = dp[gotoo.ff][gotoo.ss].ss;
+	}
+	// cout << ans << endl;
+	reverse(all(ans));
+	cout << ans << endl;
 
 #ifndef ONLINE_JUDGE
 	clock_t end = clock();

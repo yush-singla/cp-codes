@@ -6,11 +6,11 @@
 //#include <ext/pb_ds/trie_policy.hpp>
 //using namespace __gnu_pbds;
 using namespace std;
-// #define int 		            long long
+#define int 		            long long
 #define ld				        long double
 #define mod                     1000000007
 #define inf                     1e18
-// #define endl			        "\n"
+#define endl			        "\n"
 #define tc                      int ntc;cin>>ntc;while(ntc--)
 #define pb 				        push_back
 #define vi                      vector<int>
@@ -30,16 +30,18 @@ using namespace std;
 #define looprev(i,a,b) 	        for(int i=(a);i>=(b);i--)
 #define iter(container, it)     for(__typeof(container.begin()) it = container.begin(); it != container.end(); it++)
 #define log(args...) 	        { string _s = #args; replace(_s.begin(), _s.end(), ',', ' '); stringstream _ss(_s); istream_iterator<string> _it(_ss); err(_it, args); }
-#define logarr(arr,a,b)	        for(int z=(a);z<=(b);z++) {cout<<arr[z].ff<<' '<<arr[z].ss<<" ";}cout<<endl;
+#define logarr(arr,a,b)	        for(int z=(a);z<=(b);z++) cout<<(arr[z])<<" ";cout<<endl;
 template <typename T> T gcd(T a, T b) {if (a % b) return gcd(b, a % b); return b;}
 template <typename T> T lcm(T a, T b)        {return (a * (b / gcd(a, b)));}
 vs tokenizer(string str, char ch)         {std::istringstream var((str)); vs v; string t; while (getline((var), t, (ch))) {v.pb(t);} return v;}
 
+int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
+int dy[] = { 0, 0, 1, -1, 1, -1, -1, 1 };
 
 void err(istream_iterator<string> it) {}
 template<typename T, typename... Args>
 void err(istream_iterator<string> it, T a, Args... args) {
-	cout << *it << " = " << a << endl;
+	cout << *it << " = " << a << ' ';
 	err(++it, args...);
 }
 //typedef tree<int, null_type, less<int>, rb_tree_tag, tree_order_statistics_node_update> pbds;
@@ -60,74 +62,41 @@ int32_t main() {
 	clock_t begin = clock();
 	file_i_o();
 	// Write your code here....
-	int n;
-	cin >> n;
-	int arr[n][n];
-	std::vector<pii> v[2];
-	loop(i, 0, n - 1) {
-		loop(j, 0, n - 1) {
-			v[(i + j) % 2].pb({i + 1, j + 1});
+	int h, w;
+	cin >> h >> w;
+	char arr[h][w];
+	loop(i, 0, h - 1) {
+		loop(j, 0, w - 1) {
+			cin >> arr[i][j];
 		}
 	}
-	// logarr(v[0], 0, n - 1);
-	// logarr(v[1], 0, n - 1);
-	int a;
-	cin >> a;
-	int fill0 = (a + 1) % 3, i0 = 0;
-	if (fill0 == 0)fill0 = 3;
-	int fill1 = (a + 2) % 3, i1 = 0;
-	if (fill1 == 0)fill1 = 3;
-	// log(fill1, fill0)
-	cout << fill0 << ' ' << v[0][i0].ff << ' ' << v[0][i0++].ss << endl;
-	// fflush(stdout);
-	int emp;
-	loop(i, 0, n * n ) {
-		if (i0 == v[0].size()) {
-			emp = 0;
-			break;
-		}
-		if (i1 == v[1].size()) {
-			emp = 1;
-			break;
-		}
-		cin >> a;
-		if (a == fill0) {
-			cout << fill1 << ' ' << v[1][i1].ff << ' ' << v[1][i1++].ss << endl;
-			// fflush(stdout);
-		} else {
-			cout << fill0 << ' ' << v[0][i0].ff << ' ' << v[0][i0++].ss << endl;
-			// fflush(stdout);
+	int dp[h][w] = {0};
+	loop(i, 0, h - 1) {
+		loop(j, 0, w - 1) {
+			dp[i][j] = 0;
 		}
 	}
-	if (emp == 1) {
-		while (i0 != v[0].size()) {
-			cin >> a;
-			if (a != fill0) {
-				cout << fill0 << ' ' << v[0][i0].ff << ' ' << v[0][i0++].ss << endl;
-				// fflush(stdout);
-			} else {
-				if (a == fill0) {
-					int fill2 = 6 - fill1 - fill0;
-					cout << fill2 << ' ' << v[0][i0].ff << ' ' << v[0][i0++].ss << endl;
-					// fflush(stdout);
-				}
-			}
-		}
-	} else if (emp == 0) {
-		while (i1 != v[1].size()) {
-			cin >> a;
-			if (a != fill1) {
-				cout << fill1 << ' ' << v[1][i1].ff << ' ' << v[1][i1++].ss << endl;
-				// fflush(stdout);
-			} else {
-				if (a == fill1) {
-					int fill2 = 6 - fill1 - fill0;
-					cout << fill2 << ' ' << v[1][i1].ff << ' ' << v[1][i1++].ss << endl;
-					// fflush(stdout);
-				}
-			}
+	//just make sure you are traversing the matrice in the right order
+	//to get the answer properly and easily
+	dp[h - 1][w - 1] = 1;
+	looprev(sum, h + w - 2, 0) {
+		looprev(j, min(sum, w - 1), 0) {
+			int i = sum - j;
+			if (i < 0 || j < 0  || i >= h || j >= w)
+				break;
+			if (arr[i][j] == '#')
+				continue;
+			// cout << i << ' ' << j << endl;
+			if (i + 1 < h )
+				dp[i][j] = (dp[i][j] + dp[i + 1][j]) % mod;
+			if (j + 1 < w)
+				dp[i][j] = (dp[i][j] + dp[i][j + 1]) % mod;
 		}
 	}
+	// loop(i, 0, h - 1) {
+	// 	logarr(dp[i], 0, w - 1)
+	// }
+	cout << dp[0][0] << endl;
 
 #ifndef ONLINE_JUDGE
 	clock_t end = clock();
